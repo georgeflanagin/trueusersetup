@@ -48,7 +48,21 @@ Copying all the files from the
 /8 to the /9 directory creates two problems:
 
 1. It takes up a lot of space.
-2. Bug fixes to scripts that reside in directories like `/mnt/usrlocal/8/etc/modulefiles` will require that the change be repeated in the /9 directory, introducing the opportunity to make mistakes or to entirely forget that it needs to be done.
+2. Bug fixes and all other changes to the scripts that reside in directories like `/mnt/usrlocal/8/etc/modulefiles` will require that the change be repeated in the /9 directory, introducing the opportunity to make mistakes or to entirely forget that it needs to be done.
+
+The solution for this problem is to link the files in /9 to the files in /8. However NFS does not
+allow symbolic links to resolve to a file or directory that resides in a non-mounted directory. Thus,
+we need to use the somewhat less common non-symbolic links, often called "hard links," although that
+terms is not technically correct. They are just "links."
+
+This command: 
+
+```
+ln /some/directory/somefile.py /some/other/directory/differentname.py
+```
+
+Creates a new directory entry that points to the same sectors on disk, effectively giving the
+data two different names.
 
 
 ### Linux 9, compiled binaries
