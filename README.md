@@ -11,13 +11,13 @@ mounting the "whole thing," thereby allowing clients to pick and choose.
 The Linux 8 workstations mount `/mnt/usrlocal/8` as their `/usr/local/chem.sw`, so that they see the Linux 8
 software. Here is the relevant line in the client computers' `/etc/fstab`:
 
-```
+```bash
 141.166.186.35:/mnt/usrlocal/8  /usr/local/chem.sw  nfs     ro,nosuid,nofail,_netdev 0 0
 ```
 
 For those unfamiliar with the syntax for mounting NFS shares, the terms have these meanings:
 
-```
+```bash
 141.166.186.35:/mnt/usrlocal/8  <<-- the location of the directory
 /usr/local/chem.sw              <<-- its name in the client computer's file system
 nfs                             <<-- the mechanism for mounting it.
@@ -35,7 +35,7 @@ ro,nosuid,nofail,_netdev        <<-- read only,
 Alongside `/mnt/usrlocal/8` is `/mnt/usrlocal/9`. The directory structure of `/mnt/usrlocal/8` (but not
 the files!) has been cloned onto `/mnt/usrlocal/9` with this command:
 
-```
+```bash
 cd /mnt/usrlocal/8
 find . -type d -exec mkdir -p ../9/{} \;
 ```
@@ -58,7 +58,7 @@ terms is not technically correct. They are just "links."
 
 This command: 
 
-```
+```bash
 ln /some/directory/somefile.py /some/other/directory/differentname.py
 ```
 
@@ -67,12 +67,12 @@ data two different names. Of course, if you need to link a few hundred thousand 
 approach is impractical. Fortunately, the Swiss Army Knife of the file system, `rsync` comes
 to our rescue:
 
-```
+```bash
 rsync -av --progress --ignore-existing --link-dest=/mnt/usrlocal/8 /mnt/usrlocal/8/ /mnt/usrlocal/9/
 ```
 And here is an explanation of the frequently bewildering options of `rsync`:
 
-```
+```bash
 -a                              archive mode traverses the directory tree
 v                               verbosity let's us observe 
 --progress                      prints a progress bar for entertainment
@@ -81,6 +81,24 @@ v                               verbosity let's us observe
 /mnt/usrlocal/8/                the source .. everything in 8/
 /mnt/usrlocal/9/                the destination
 ```
+
+Files that have more than one link (i.e., a name in both the 8/ and 9/ directories) will show up with
+a `2` in the link count column when using the `ls -l` command:
+
+```
+-rwxr-xr-x  2 nobody  nogroup  uarch    231115 Apr  4  2016 h5dump*
+```
+
+Although it is somewhat impractical considering the number of files on the NAS, you can identify all the files
+that are linked with this command:
+
+```bash
+find /mnt/usrlocal/9 -type f -links +1
+```
+
+
+
+Although it is somewhat impractical considering the number of files in
 
 ### Linux 9, compiled binaries
 
@@ -91,5 +109,7 @@ For these programs, we follow the same process used for Linux 8:
 3. Use `scp` to move the files from the build environment to the NAS.
 4. On the NAS, `chown nobody:nogroup` on the new software to ensure availability and correct permissions.
 
+## Consderations
 
+This system does save a great deal of space. 
 
