@@ -119,11 +119,12 @@ For these programs, we follow the same process used for Linux 8:
 ## Consderations
 
 This system does save a great deal of space, and from the standpoing that many of files being
-served to the workstations are identical on Linux 8 and Linux 9, caching is improved
-because the NAS is aware when a file is identical, and just has two names. 
+served to the workstations are identical on Linux 8 and Linux 9, caching *on the NAS* is improved
+because the NAS is aware when a file is identical, and just has two names. The NAS has 32GB of RAM, 
+and there are 290GB of files, so managing the cache efficiently is a very good idea.
 
-However, it is easy to think of the two directory hierarchies as being syncronized, and this is
-false. Adding *new* items to the 8/ directory or the 9/ directory will not automatically create
+However, it is easy to think of the two directory hierarchies as being "syncronized," and this is
+false. Adding *new* items to either the 8/ directory or the 9/ directory will not automatically create
 a copy in the other hierarchy. OTOH, edits to an existing file (examples: login scripts, module files)
 are visible in both directories because there is only one underlying file.
 
