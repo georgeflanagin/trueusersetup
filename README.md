@@ -70,7 +70,7 @@ to our rescue:
 ```
 rsync -av --progress --ignore-existing --link-dest=/mnt/usrlocal/8 /mnt/usrlocal/8/ /mnt/usrlocal/9/
 ```
-And here is an explanation of the frequently bewildering options:
+And here is an explanation of the frequently bewildering options of `rsync`:
 
 ```
 -a                              archive mode traverses the directory tree
