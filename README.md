@@ -35,8 +35,8 @@ Alongside `/mnt/usrlocal/8` is `/mnt/usrlocal/9`. The directory structure of `/m
 the files!) has been cloned onto `/mnt/usrlocal/9` with this command:
 
 ```
-cd /mnt/usrlocal
-find 8 -type d -exec mkdir -p 9/{} \;
+cd /mnt/usrlocal/8
+find . -type d -exec mkdir -p ../9/{} \;
 ```
 
 This process ensures that scripts referencing locations in Linux 8 environment will work unmodified in
@@ -47,7 +47,7 @@ the Linux 9 environment, at least for the directory names and the environment va
 Copying all the files from the 
 /8 to the /9 directory creates two problems:
 
-1. It takes up a lot of space.
+1. It takes up a *lot* of space.
 2. Bug fixes and all other changes to the scripts that reside in directories like `/mnt/usrlocal/8/etc/modulefiles` will require that the change be repeated in the /9 directory, introducing the opportunity to make mistakes or to entirely forget that it needs to be done.
 
 The solution for this problem is to link the files in /9 to the files in /8. However NFS does not
@@ -62,8 +62,24 @@ ln /some/directory/somefile.py /some/other/directory/differentname.py
 ```
 
 Creates a new directory entry that points to the same sectors on disk, effectively giving the
-data two different names.
+data two different names. Of course, if you need to link a few hundred thousand files, this 
+approach is impractical. Fortunately, the Swiss Army Knife of the file system, `rsync` comes
+to our rescue:
 
+```
+rsync -av --progress --ignore-existing --link-dest=/mnt/usrlocal/8 /mnt/usrlocal/8/ /mnt/usrlocal/9/
+```
+And here is an explanation of the frequently bewildering options:
+
+```
+-a                              archive mode traverses the directory tree
+v                               verbosity let's us observe 
+--progress                      prints a progress bar for entertainment
+--ignore-existing               will not overwrite any file in the destination
+--link-dest=/mnt/usrlocal/8     creates links to the corresponding files rather than copies
+/mnt/usrlocal/8/                the source .. everything in 8/
+/mnt/usrlocal/9/                the destination
+```
 
 ### Linux 9, compiled binaries
 
