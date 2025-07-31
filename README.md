@@ -48,7 +48,7 @@ Copying all the files from the
 /8 to the /9 directory creates two problems:
 
 1. It takes up a lot of space.
-2. Bug fixes 
+2. Bug fixes to scripts that reside in directories like `/mnt/usrlocal/8/etc/modulefiles` will require that the change be repeated in the /9 directory, introducing the opportunity to make mistakes or to entirely forget that it needs to be done.
 
 
 ### Linux 9, compiled binaries
