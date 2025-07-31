@@ -29,8 +29,27 @@ ro,nosuid,nofail,_netdev        <<-- read only,
 
 ## Migration to Rocky Linux 9
 
-Alongside `/mnt/usrlocal/8` is `/mnt/usrlocal/9`. There are two types of programs that need to be 
-made available. 
+### Copying the directories
+
+Alongside `/mnt/usrlocal/8` is `/mnt/usrlocal/9`. The directory structure of `/mnt/usrlocal/8` (but not
+the files!) has been cloned onto `/mnt/usrlocal/9` with this command:
+
+```
+cd /mnt/usrlocal
+find 8 -type d -exec mkdir -p 9/{} \;
+```
+
+This process ensures that scripts referencing locations in Linux 8 environment will work unmodified in
+the Linux 9 environment, at least for the directory names and the environment variables that contain them.
+
+### Migrating the files
+
+Copying all the files from the 
+/8 to the /9 directory creates two problems:
+
+1. It takes up a lot of space.
+2. Bug fixes 
+
 
 ### Linux 9, compiled binaries
 
@@ -39,5 +58,7 @@ For these programs, we follow the same process used for Linux 8:
 1. Choose a Linux 9 computer as the build environment.
 2. Install the development tools, and build the code.
 3. Use `scp` to move the files from the build environment to the NAS.
-4. On the NAS, `chown nobody:nogroup` on the new software.
+4. On the NAS, `chown nobody:nogroup` on the new software to ensure availability and correct permissions.
+
+
 
