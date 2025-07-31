@@ -89,13 +89,20 @@ a `2` in the link count column when using the `ls -l` command:
 -rwxr-xr-x  2 nobody  nogroup  uarch    231115 Apr  4  2016 h5dump*
 ```
 
+whereas files that are not linked across the 8/ and 9/ environments have only only `1` link:
+
+```
+-rwxrwxr-x. 1 nobody nogroup   8998920 Aug 21  2024 sander
+```
+
 Although it is somewhat impractical considering the number of files on the NAS, you can identify all the files
-that are linked with this command:
+that are linked between/across the two environments with this command:
 
 ```bash
 find /mnt/usrlocal/9 -type f -links +1
 ```
 
+... further proof that `find` has an option for almost every file characteristic.
 
 
 Although it is somewhat impractical considering the number of files in
@@ -111,5 +118,12 @@ For these programs, we follow the same process used for Linux 8:
 
 ## Consderations
 
-This system does save a great deal of space. 
+This system does save a great deal of space, and from the standpoing that many of files being
+served to the workstations are identical on Linux 8 and Linux 9, caching is improved
+because the NAS is aware when a file is identical, and just has two names. 
+
+However, it is easy to think of the two directory hierarchies as being syncronized, and this is
+false. Adding *new* items to the 8/ directory or the 9/ directory will not automatically create
+a copy in the other hierarchy. OTOH, edits to an existing file (examples: login scripts, module files)
+are visible in both directories because there is only one underlying file.
 
